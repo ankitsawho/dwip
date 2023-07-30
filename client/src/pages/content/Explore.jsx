@@ -1,11 +1,42 @@
-import React from "react";
-import Identicon from "react-identicons";
-import { RiUserAddFill } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { LuThumbsUp } from "react-icons/lu";
+import { Link, useNavigate } from "react-router-dom";
+import { BiMessageSquareDetail } from "react-icons/bi";
+import GridLoader from "react-spinners/GridLoader";
+import axios from "axios";
+import API_CONFIG from "../../../api.config";
+import useAuthStore from "../../../zustand/auth-store";
 import DwipPost from "../../components/DwipPost";
 
 function Explore() {
-	let arr = [1, 2, 3, 4, 5, 5, 6, 7, 8, 9];
+	const [posts, setPosts] = useState([]);
+	const [reload, setReload] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const accessToken = useAuthStore((state) => state.accessToken);
+
+	useEffect(() => {
+		setLoading(true);
+		const fetchPosts = async () => {
+			try {
+				const response = await axios.get(
+					`${API_CONFIG.baseUrl}/post/popular/100/`,
+					{
+						headers: {
+							Authorization: `Bearer ${accessToken}`,
+						},
+					}
+				);
+				setPosts(response.data);
+				setLoading(false);
+			} catch (error) {
+				console.error(error);
+				setLoading(false);
+			}
+		};
+
+		fetchPosts();
+	}, []);
+
 	return (
 		<div className="w-full">
 			<h1 className="pb-4 pl-4 font-bold text-2xl cursor-default">
@@ -17,10 +48,10 @@ function Explore() {
 				<div className="font-bold text-lg ml-8 mt-6 text-slate-700 mb-3">
 					Who to follow
 				</div>
+				{/* <UserDetail />
 				<UserDetail />
 				<UserDetail />
-				<UserDetail />
-				<UserDetail />
+				<UserDetail /> */}
 				<Link to="">
 					<div className="text-sm text-right ml-8 pl-2 font-bold text-slate-500 py-3">
 						Show More
@@ -29,39 +60,32 @@ function Explore() {
 			</div>
 
 			{/* Trending */}
-			{/* <div className="mt-3">
-				{arr.map((item) => (
-					<DwipPost key={item} />
-				))}
-			</div> */}
+			<h1 className="mt-10 pl-4 font-bold text-2xl cursor-default">
+				Trending Dwips
+			</h1>
+			{loading ? (
+				<div className="w-full p-10 flex justify-center">
+					<GridLoader
+						color="#708090"
+						loading={loading}
+						size={10}
+						aria-label="Loading Spinner"
+						data-testid="loader"
+					/>
+				</div>
+			) : (
+				<div className="mt-12">
+					{posts.map((item) => (
+						<DwipPost
+							key={item.id}
+							data={item}
+							setReload={setReload}
+						/>
+					))}
+				</div>
+			)}
 		</div>
 	);
 }
-
-const UserDetail = () => {
-	return (
-		<div className="w-full cursor-pointer">
-			<div className="rounded-md hover:bg-slate-200">
-				<div className="py-2 flex items-center justify-between">
-					<div className="flex items-center">
-						<div className="my-3 mx-4 w-fit bg-white rounded-full">
-							<Identicon string="ankitsahu" size={28} />
-						</div>
-						<div className="flex flex-col items-start font-semibold text-slate-600">
-							<span className="text-md">Ankit Sahu</span>
-							<span className="text-sm">ankitsahu</span>
-						</div>
-					</div>
-
-					<button className="flex items-end justify-center space-x-3 bg-slate-300 px-4 py-2 rounded-full mx-4">
-						<RiUserAddFill size={24} />
-						<span className="text-sm font-semibold">Follow</span>
-					</button>
-				</div>
-			</div>
-			<hr class="h-px bg-slate-300 border-0 dark:bg-slate-300"></hr>
-		</div>
-	);
-};
 
 export default Explore;

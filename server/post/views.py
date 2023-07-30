@@ -1,12 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Post, Comment, Bookmark, Notification
-from .serializers import PostSerializer, CommentSerializer, NotificationSerializer
+from .models import Post, Comment, Bookmark, Notification, Like
+from .serializers import PostSerializer, CommentSerializer, NotificationSerializer, LikeSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
 from account.serializers import UserSerializer
+from django.db.models import Count
 
 # Post
 
@@ -37,6 +38,18 @@ class PostListCreateAPIView(APIView):
         return Response(
             {"message": "Error Occurred", "data": {}},
             status=status.HTTP_400_BAD_REQUEST,
+        )
+    
+class PostByUser(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, pk):
+        posts = Post.objects.filter(author=pk).order_by("-created_at")
+        serializer = PostSerializer(posts, many=True)
+        return Response(
+            {"message": "List of Posts", "data": serializer.data},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -255,8 +268,10 @@ User = get_user_model()
 
 
 class SearchView(APIView):
-    def get(self, request):
+    def post(self, request):
         query = request.data["query"]
+        print(query)
+
         if str(query).strip() == "":
             return Response(
                 {"message": "Invalid Search Query", "data": {}},
@@ -277,3 +292,45 @@ class SearchView(APIView):
             {"message": "Search Content", "data": response_data},
             status=status.HTTP_200_OK,
         )
+
+
+class LikeAPIView(APIView):
+    def post(self, request, post_id):
+        post = Post.objects.get(pk=post_id)
+        
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+        if created:
+            return Response({"message": "Post liked successfully!"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+        
+class IsLikedAPIView(APIView):
+    def get(self, request, post_id):
+        post = Post.objects.get(pk=post_id)
+        user = request.user
+        is_liked = Like.objects.filter(user=user, post=post).exists()
+        return Response({"is_liked": is_liked}, status=status.HTTP_200_OK)
+    
+class DislikeAPIView(APIView):
+    def delete(self, request, post_id):
+        post = Post.objects.get(pk=post_id)
+        user = request.user
+
+        try:
+            like = Like.objects.get(user=user, post=post)
+            like.delete()
+            return Response({"message": "Dwip disliked successfully!"}, status=status.HTTP_200_OK)
+        except Like.DoesNotExist:
+            return Response({"message": "You have not liked this post yet."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class PopularPostsAPIView(APIView):
+    def get(self, request, size):
+        if(size == 0):
+            popular_posts = Post.objects.annotate(likes_count=Count('like')).order_by('-likes_count')
+        else:
+            popular_posts = Post.objects.annotate(likes_count=Count('like')).order_by('-likes_count')[0:size]
+
+        serializer = PostSerializer(popular_posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

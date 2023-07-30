@@ -2,13 +2,12 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.Serializer):
-    fullname = serializers.CharField()
+    id = serializers.IntegerField()
     username = serializers.CharField()
     email = serializers.EmailField()
 
 
 class UserRegisterSerializer(serializers.Serializer):
-    fullname = serializers.CharField()
     username = serializers.CharField()
     email = serializers.EmailField()
     password = serializers.CharField()

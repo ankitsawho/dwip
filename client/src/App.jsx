@@ -13,6 +13,8 @@ import Bookmarks from "./pages/content/Bookmarks";
 import Register from "./pages/auth/Register";
 import SnackbarProvider from "react-simple-snackbar";
 import Verify from "./pages/auth/Verify";
+import Comment from "./pages/content/Comment";
+import Search from "./pages/content/Search";
 
 function App() {
 	return (
@@ -28,11 +30,13 @@ function App() {
 					<Route path="" element={<Main />}>
 						<Route path="" element={<Home />} />
 						<Route path="explore" element={<Explore />} />
+						<Route path="/comment" element={<Comment />} />
+						<Route path="/search" element={<Search />} />
 						<Route
 							path="notifications"
 							element={<Notifications />}
 						/>
-						<Route path="profile" element={<Profile />} />
+						<Route path="/profile/:user_id" element={<Profile />} />
 						<Route path="bookmarks" element={<Bookmarks />} />
 					</Route>
 					<Route path="settings" element={<Settings />} />

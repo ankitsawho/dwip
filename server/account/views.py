@@ -20,7 +20,6 @@ class RegisterAPI(APIView):
                 {"message": "Login Failed", "data": {}},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        fullname = serialized_data.data["fullname"]
         username = serialized_data.data["username"]
         email = serialized_data.data["email"]
         password = serialized_data.data["password"]
@@ -43,14 +42,14 @@ class RegisterAPI(APIView):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        user = User.objects.create(fullname=fullname, username=username, email=email)
+        user = User.objects.create(username=username, email=email)
         user.set_password(password)
         user.save()
         send_otp_via_email(email)
         return Response(
             {
                 "message": "Login Successful, Please verify your email",
-                "data": {"fullname": fullname, "username": username, "email": email},
+                "data": {"username": username, "email": email},
             },
             status=status.HTTP_201_CREATED,
         )
@@ -178,3 +177,16 @@ class ChangePasswordAPI(APIView):
                 {"message": "something went wrong", "data": {}},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+class GetUserDetail(APIView):
+    def get(self, request, pk):
+        try:
+            post = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response(
+                {"message": "User not found", "data": {}},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = UserSerializer(post)
+        return Response({"message": "User found", "data": serializer.data},
+                status=status.HTTP_200_OK,)

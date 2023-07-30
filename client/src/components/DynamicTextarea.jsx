@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const DynamicTextarea = ({ text, setText }) => {
+const DynamicTextarea = ({ text, setText, placeholder = null }) => {
 	const handleChange = (event) => {
 		setText(event.target.value);
 	};
@@ -13,11 +13,16 @@ const DynamicTextarea = ({ text, setText }) => {
 	return (
 		<div className="relative">
 			<textarea
+				autoFocus
 				value={text}
 				onChange={handleChange}
 				onInput={handleInput}
 				className="resize-none cursor-text block w-full bg-transparent px-3 py-2 rounded-md focus:outline-none text-lg"
-				placeholder="What's on your mind? Dwip It!"
+				placeholder={
+					placeholder !== null
+						? placeholder
+						: "What's on your mind? Dwip It!"
+				}
 			/>
 		</div>
 	);

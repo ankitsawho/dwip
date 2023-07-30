@@ -18,7 +18,6 @@ function Register() {
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState("");
-	const [fullname, setFullname] = useState("");
 	const [password, setPassword] = useState("");
 	const [repassword, setRepassword] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -33,10 +32,6 @@ function Register() {
 		if (password !== repassword) {
 			return toast("Password Mismatch");
 		}
-		if (fullname.trim().length < 3) {
-			toast("Invalid Fullname");
-			return;
-		}
 		if (password.trim().length < 4) {
 			toast("Invalid Password");
 			return;
@@ -47,7 +42,6 @@ function Register() {
 				`${API_CONFIG.baseUrl}/account/register/`,
 				{
 					username,
-					fullname,
 					email,
 					password,
 				}
@@ -79,16 +73,11 @@ function Register() {
 					<input
 						className="w-full px-4 py-3 rounded-2xl border border-slate-300 focus:outline-none focus:ring-slate-500 focus:border-slate-500"
 						type="text"
-						placeholder="Fullname"
-						value={fullname}
-						onChange={(e) => setFullname(e.target.value)}
-					/>
-					<input
-						className="w-full px-4 py-3 rounded-2xl border border-slate-300 focus:outline-none focus:ring-slate-500 focus:border-slate-500"
-						type="text"
 						placeholder="Username"
 						value={username}
-						onChange={(e) => setUsername(e.target.value)}
+						onChange={(e) =>
+							setUsername(e.target.value.toLowerCase())
+						}
 					/>
 					<input
 						className="w-full px-4 py-3 rounded-2xl border border-slate-300 focus:outline-none focus:ring-slate-500 focus:border-slate-500"

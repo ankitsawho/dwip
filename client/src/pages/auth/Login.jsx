@@ -90,7 +90,7 @@ function Login() {
 						</button>
 					)}
 					<div>
-						<Link t0="">
+						<Link to="">
 							<span className="font-semibold text-xs text-slate-700">
 								Forgot password?
 							</span>

@@ -13,8 +13,13 @@ function LogoutButton() {
 		navigate("/");
 	};
 	return (
-		<div>
-			<button onClick={handleLogout}>Logout</button>
+		<div className="p-2">
+			<button
+				className="bg-red-400 font-bold text-slate-50 px-6 py-2 rounded-lg"
+				onClick={handleLogout}
+			>
+				Logout
+			</button>
 		</div>
 	);
 }
