@@ -8,6 +8,8 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
+    original_post = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+
 
 
 class Like(models.Model):

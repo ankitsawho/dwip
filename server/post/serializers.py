@@ -6,6 +6,18 @@ class PostSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source="author.username", read_only=True)
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
+    original_post_detail = serializers.SerializerMethodField()
+
+    def get_original_post_detail(self, obj):
+        if obj.original_post:
+            return {
+                "id": obj.original_post.id,
+                "author": obj.original_post.author.id,
+                "author_username": obj.original_post.author.username, 
+                "content": obj.original_post.content,
+                "created_at": obj.original_post.created_at,
+            }
+        return None
 
     class Meta:
         model = Post
@@ -16,7 +28,9 @@ class PostSerializer(serializers.ModelSerializer):
             "content",
             "created_at",
             "comments_count",
-            "likes_count"
+            "likes_count",
+            'original_post',
+            "original_post_detail"
         ]
         read_only_fields = ["created_at"]
         

@@ -19,4 +19,5 @@ urlpatterns = [
     path("<int:post_id>/is-liked/", IsLikedAPIView.as_view(), name="is-liked-post"),
     path("<int:post_id>/dislike/", DislikeAPIView.as_view(), name="dislike-post"),
     path("popular/<int:size>/", PopularPostsAPIView.as_view(), name="popular-posts"),
+    path('<int:post_id>/repost/', RepostAPIView.as_view(), name='repost'),
 ]

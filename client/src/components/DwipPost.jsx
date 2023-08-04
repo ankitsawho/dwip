@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Identicon from "react-identicons";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
-import { FaRetweet } from "react-icons/fa";
 import { BiMessageSquareDetail, BiBookmark } from "react-icons/bi";
 import moment from "moment";
 import jwtDecode from "jwt-decode";
 import useAuthStore from "../../zustand/auth-store";
 import { FiMoreVertical } from "react-icons/fi";
-import toast, { ToastBar } from "react-hot-toast";
+import toast from "react-hot-toast";
 import axios from "axios";
 import API_CONFIG from "../../api.config";
 import { Link, useNavigate } from "react-router-dom";
+import RepostModal from "./RePostModal";
+import RePostData from "./RePostData";
 
 function DwipPost({ data, setReload }) {
 	const navigate = useNavigate();
@@ -182,6 +183,9 @@ function DwipPost({ data, setReload }) {
 				</div>
 			</div>
 			<div className="text-md px-16 pt-3 pb-6">{data.content}</div>
+			{data.original_post && (
+				<RePostData data={data.original_post_detail} />
+			)}
 			<div className="flex items-end justify-end space-x-4 mr-4">
 				<div
 					onClick={handleLikes}
@@ -206,8 +210,8 @@ function DwipPost({ data, setReload }) {
 						{data.comments_count}
 					</span>
 				</div>
-				<div className="flex px-3 py-1  text-slate-500 rounded-lg space-x-2 items-center justify-center cursor-pointer hover:bg-slate-200">
-					<FaRetweet size={20} />
+				<div className="text-slate-500 rounded-lg items-center justify-center cursor-pointer hover:bg-slate-200">
+					<RepostModal original_post={data} likesCount={likesCount} />
 				</div>
 				<div
 					onClick={handleAddBookmark}

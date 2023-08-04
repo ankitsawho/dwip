@@ -6,9 +6,11 @@ import GridLoader from "react-spinners/GridLoader";
 import axios from "axios";
 import API_CONFIG from "../../../api.config";
 import useAuthStore from "../../../zustand/auth-store";
+import useReloadStore from "../../../zustand/reload-store";
 
 function Home() {
 	const accessToken = useAuthStore((state) => state.accessToken);
+	const reloadPosts = useReloadStore((state) => state.reloadPosts);
 	const [posts, setPosts] = useState([]);
 	const [reload, setReload] = useState(true);
 
@@ -34,7 +36,7 @@ function Home() {
 		};
 
 		fetchPosts();
-	}, [reload]);
+	}, [reload, reloadPosts]);
 
 	return (
 		<div className="px-2">

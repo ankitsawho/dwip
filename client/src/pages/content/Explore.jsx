@@ -39,25 +39,20 @@ function Explore() {
 
 	return (
 		<div className="w-full">
-			<h1 className="pb-4 pl-4 font-bold text-2xl cursor-default">
+			{/* <h1 className="pb-4 pl-4 font-bold text-2xl cursor-default">
 				Explore
 			</h1>
 
-			{/* To Follow */}
 			<div className="flex flex-col bg-slate-100 p-1 rounded-2xl items-start justify-start">
 				<div className="font-bold text-lg ml-8 mt-6 text-slate-700 mb-3">
 					Who to follow
 				</div>
-				{/* <UserDetail />
-				<UserDetail />
-				<UserDetail />
-				<UserDetail /> */}
 				<Link to="">
 					<div className="text-sm text-right ml-8 pl-2 font-bold text-slate-500 py-3">
 						Show More
 					</div>
 				</Link>
-			</div>
+			</div> */}
 
 			{/* Trending */}
 			<h1 className="mt-10 pl-4 font-bold text-2xl cursor-default">

@@ -6,6 +6,7 @@ import useAuthStore from "../../zustand/auth-store";
 import jwtDecode from "jwt-decode";
 import API_CONFIG from "../../api.config";
 import axios from "axios";
+import CreatePostModal from "./CreatePostModal";
 
 function UserDetailHome() {
 	const accessToken = useAuthStore((state) => state.accessToken);
@@ -52,11 +53,7 @@ function UserDetailHome() {
 					</div>
 				</Link>
 			</div>
-			<Link to="/">
-				<div>
-					<MoreLinks icon={FaPen} title="Create" />
-				</div>
-			</Link>
+			<CreatePostModal />
 		</div>
 	);
 }
